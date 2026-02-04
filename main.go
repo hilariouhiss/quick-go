@@ -1,20 +1,44 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
+type Response struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+	Data    any    `json:"data,omitempty"` // 无数据时自动省略该字段
+}
+
+func jsonResponse(c *gin.Context, code int, message string, data any) {
+	c.JSON(http.StatusOK, Response{
+		Code:    code,
+		Message: message,
+		Data:    data,
+	})
+}
+
 func main() {
 	router := gin.Default()
-	router.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "pong",
-		})
+	router.Use(func(c *gin.Context) {
+		defer func() {
+			if r := recover(); r != nil {
+				jsonResponse(c, http.StatusInternalServerError, "internal server error", nil)
+				c.Abort()
+			}
+		}()
+		c.Next()
 	})
-	err := router.Run(":8080")
+	router.GET("/health", func(c *gin.Context) {
+		jsonResponse(c, http.StatusOK, "health check ok", "")
+	})
+	// TODO：设置为 Nginx IP 地址
+	err := router.Run()
 	if err != nil {
+		log.Fatalf("服务启动失败: %v", err)
 		return
 	}
 }
