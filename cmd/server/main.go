@@ -9,11 +9,14 @@ import (
 
 // main 启动 HTTP 服务入口
 func main() {
-	// 加载应用配置
-	cfg := config.Load()
+	cfg, err := config.Load()
+	if err != nil {
+		log.Fatalf("配置加载失败: %v", err)
+		return
+	}
 	// 创建并启动应用
 	application := app.New(cfg)
-	err := application.Run()
+	err = application.Run()
 	if err != nil {
 		log.Fatalf("服务启动失败: %v", err)
 		return
