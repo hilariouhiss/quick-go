@@ -13,6 +13,7 @@
 ## Users RESTful + PostgreSQL（按当前结构落地）
 
 ### 目录规划
+
 ```
 cmd/server/main.go
 internal/app/app.go
@@ -26,7 +27,9 @@ internal/model/user.go
 ```
 
 ### 1）Model
+
 `internal/model/user.go`
+
 ```go
 package model
 
@@ -38,7 +41,9 @@ type User struct {
 ```
 
 ### 2）Repository 接口
+
 `internal/repository/user_repository.go`
+
 ```go
 package repository
 
@@ -52,7 +57,9 @@ type UserRepository interface {
 ```
 
 ### 3）PostgreSQL 实现
+
 `internal/repository/user_pg.go`
+
 ```go
 package repository
 
@@ -111,7 +118,9 @@ func (r *UserRepoPG) List() ([]model.User, error) {
 ```
 
 ### 4）Service 层
+
 `internal/service/user.go`
+
 ```go
 package service
 
@@ -142,7 +151,9 @@ func (s *UserService) ListUsers() ([]model.User, error) {
 ```
 
 ### 5）Handler 层
+
 `internal/handler/user.go`
+
 ```go
 package handler
 
@@ -201,7 +212,9 @@ func (h *UserHandler) Create(c *gin.Context) {
 ```
 
 ### 6）路由注册
+
 `internal/router/router.go`
+
 ```go
 userRepo := repository.NewUserRepoPG(db)
 userService := service.NewUserService(userRepo)
@@ -215,14 +228,28 @@ users.POST("", userHandler.Create)
 ```
 
 ### 7）数据库配置与初始化
-`internal/config/config.go` 增加数据库连接参数，在 `internal/app/app.go` 中创建 pgxpool 并注入 `repository.NewUserRepoPG`。
+
+`internal/config/config.go` 增加数据库连接参数，在 `internal/app/app.go` 中创建 pgxpool 并注入
+`repository.NewUserRepoPG`。
 
 ### 8）建议的表结构
+
 ```sql
-create table if not exists users (
-  id bigserial primary key,
-  name text not null,
-  email text not null unique
+create table if not exists users
+(
+    id
+    bigserial
+    primary
+    key,
+    name
+    text
+    not
+    null,
+    email
+    text
+    not
+    null
+    unique
 );
 ```
 
