@@ -1,12 +1,40 @@
- # 示例
-
+# 指定 sqlc 配置文件的版本
 version: "2"
+
+# 定义一个或多个数据库查询/生成任务（支持多数据库）
 sql:
-  - engine: "postgresql"
+  - 
+    # 指定目标数据库引擎类型
+    # 可选值: "postgresql", "mysql", "sqlite"
+    engine: "postgresql"
+
+    # 指向包含 SQL 查询语句的文件或目录
+    # sqlc 会解析其中以 "-- name: ..." 开头的命名查询
+    # 支持单个文件（如 "query.sql"）或目录（如 "./db/query"）
     queries: "query.sql"
+
+    # 指向数据库 schema 文件（通常是 CREATE TABLE 语句）
+    # sqlc 用它来校验 SQL 查询中的字段、表是否存在，确保生成代码的安全性
+    # 可以是单个文件（如 "schema.sql"）或目录（如 "./db/migration"）
     schema: "schema.sql"
+
+    # 代码生成配置
     gen:
+      # Go 语言专属生成选项
       go:
-        package: "tutorial"
-        out: "tutorial"
+        # 生成的 Go 代码所属的包名
+        # 该名称会出现在生成文件顶部的 `package quick` 声明中
+        package: "quick"
+
+        # 生成的 Go 文件输出目录（相对于当前工作目录）
+        # sqlc 会在此目录下生成 models.go、db.go、queries.go 等文件
+        out: "quick"
+
+        # 指定使用的 Go 数据库驱动包
+        # 影响生成代码中导入的 driver 和连接方式
+        # 常见选项：
+        #   - "database/sql" （标准库，默认）
+        #   - "pgx/v5"       （使用 pgx v5 作为 driver，性能更好，推荐用于 PostgreSQL）
+        #   - "github.com/go-sql-driver/mysql" （MySQL）
+        # 注意：若使用 "pgx/v5"，需在项目中 import _ "github.com/jackc/pgx/v5/stdlib"
         sql_package: "pgx/v5"
