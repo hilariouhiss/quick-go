@@ -2,5 +2,8 @@ env: "dev"
 addr: ":8080"
 postgres:
   dsn: "postgres://localhost:5432/dev?sslmode=disable"
+  user: "dev"
+  password: "dev123"
+  schema: "public"
   max_conns: 20
   min_conns: 2

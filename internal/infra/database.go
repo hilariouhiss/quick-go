@@ -26,6 +26,18 @@ func NewPostgresPool(ctx context.Context, cfg config.PostgresConfig) (*pgxpool.P
 	if cfg.MinConns > 0 {
 		poolConfig.MinConns = cfg.MinConns
 	}
+	if strings.TrimSpace(cfg.User) != "" {
+		poolConfig.ConnConfig.User = cfg.User
+	}
+	if cfg.Password != "" {
+		poolConfig.ConnConfig.Password = cfg.Password
+	}
+	if strings.TrimSpace(cfg.Schema) != "" {
+		if poolConfig.ConnConfig.RuntimeParams == nil {
+			poolConfig.ConnConfig.RuntimeParams = map[string]string{}
+		}
+		poolConfig.ConnConfig.RuntimeParams["search_path"] = cfg.Schema
+	}
 
 	pool, err := pgxpool.NewWithConfig(ctx, poolConfig)
 	if err != nil {

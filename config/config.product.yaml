@@ -1,6 +1,9 @@
 env: "product"
 addr: ":8080"
 postgres:
-  dsn: "postgres://localhost:5432/product?sslmode=disable"
+  dsn: "postgres://localhost:5432/quick?sslmode=disable"
+  user: "quick"
+  password: ""
+  schema: "public"
   max_conns: 50
   min_conns: 5

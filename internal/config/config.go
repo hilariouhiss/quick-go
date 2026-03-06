@@ -18,6 +18,9 @@ type Config struct {
 // PostgresConfig 定义 PostgreSQL 连接与连接池参数
 type PostgresConfig struct {
 	DSN      string `mapstructure:"dsn"`
+	User     string `mapstructure:"user"`
+	Password string `mapstructure:"password"`
+	Schema   string `mapstructure:"schema"`
 	MaxConns int32  `mapstructure:"max_conns"`
 	MinConns int32  `mapstructure:"min_conns"`
 }
@@ -42,6 +45,9 @@ func Load() (Config, error) {
 	case "product":
 		v.SetDefault("postgres.dsn", "postgres://localhost:5432/product?sslmode=disable")
 	}
+	v.SetDefault("postgres.user", "")
+	v.SetDefault("postgres.password", "")
+	v.SetDefault("postgres.schema", "public")
 	v.SetDefault("postgres.max_conns", 20)
 	v.SetDefault("postgres.min_conns", 2)
 
