@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Response 定义统一的 API 返回结构
 type Response struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`

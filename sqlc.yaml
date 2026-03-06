@@ -3,20 +3,21 @@ version: "2"
 
 # 定义一个或多个数据库查询/生成任务（支持多数据库）
 sql:
-  - 
-    # 指定目标数据库引擎类型
+  - # 指定目标数据库引擎类型
     # 可选值: "postgresql", "mysql", "sqlite"
     engine: "postgresql"
 
     # 指向包含 SQL 查询语句的文件或目录
     # sqlc 会解析其中以 "-- name: ..." 开头的命名查询
     # 支持单个文件（如 "query.sql"）或目录（如 "./db/query"）
-    queries: "query.sql"
+    queries: "./sql/query"
 
     # 指向数据库 schema 文件（通常是 CREATE TABLE 语句）
     # sqlc 用它来校验 SQL 查询中的字段、表是否存在，确保生成代码的安全性
     # 可以是单个文件（如 "schema.sql"）或目录（如 "./db/migration"）
-    schema: "schema.sql"
+    schema: "./sql/schema"
+    database:
+      uri: "${SQLC_DATABASE_URI}"
 
     # 代码生成配置
     gen:
@@ -28,7 +29,7 @@ sql:
 
         # 生成的 Go 文件输出目录（相对于当前工作目录）
         # sqlc 会在此目录下生成 models.go、db.go、queries.go 等文件
-        out: "quick"
+        out: "db"
 
         # 指定使用的 Go 数据库驱动包
         # 影响生成代码中导入的 driver 和连接方式

@@ -1,0 +1,6 @@
+env: "product"
+addr: ":8080"
+postgres:
+  dsn: "postgres://localhost:5432/product?sslmode=disable"
+  max_conns: 50
+  min_conns: 5
