@@ -20,10 +20,40 @@ ALTER TABLE users
 CREATE UNIQUE INDEX users_username_unique_active_idx ON users (username) WHERE deleted_at IS NULL;
 CREATE UNIQUE INDEX users_email_unique_active_idx ON users (email) WHERE deleted_at IS NULL;
 
-INSERT INTO users (id, username, email, password_hash, status, created_by, updated_by)
-OVERRIDING SYSTEM VALUE
-VALUES (1, 'system', 'system@local', '$2b$12$system.seed.account.disabled.placeholder.hash', 0, 1, 1)
-ON CONFLICT (id) DO NOTHING;
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM users
+        WHERE id = 1
+          AND username <> 'system'
+    ) THEN
+        RAISE EXCEPTION 'seed conflict: id=1 is occupied by non-system user';
+    END IF;
+
+    IF EXISTS (
+        SELECT 1
+        FROM users
+        WHERE username = 'system'
+          AND id <> 1
+    ) THEN
+        RAISE EXCEPTION 'seed conflict: username=system exists with id <> 1';
+    END IF;
+
+    INSERT INTO users (id, username, email, password_hash, status, created_by, updated_by)
+    OVERRIDING SYSTEM VALUE
+    VALUES (1, 'system', 'system@local', '$2b$12$system.seed.account.disabled.placeholder.hash', 0, 1, 1)
+    ON CONFLICT (id) DO UPDATE
+    SET username = EXCLUDED.username,
+        email = EXCLUDED.email,
+        password_hash = EXCLUDED.password_hash,
+        status = EXCLUDED.status,
+        created_by = EXCLUDED.created_by,
+        updated_by = EXCLUDED.updated_by,
+        deleted_by = NULL,
+        deleted_at = NULL;
+END;
+$$;
 
 SELECT setval(
     pg_get_serial_sequence('users', 'id'),
