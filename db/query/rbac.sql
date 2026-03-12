@@ -3,12 +3,18 @@ INSERT INTO users (
     username,
     email,
     password_hash,
-    is_active
+    status,
+    created_by,
+    updated_by,
+    version
 ) VALUES (
     $1,
     $2,
     $3,
-    $4
+    $4,
+    $5,
+    $6,
+    1
 )
 RETURNING *;
 
@@ -29,8 +35,9 @@ UPDATE users
 SET username = $2,
     email = $3,
     password_hash = $4,
-    is_active = $5,
-    updated_at = NOW()
+    status = $5,
+    updated_by = $6,
+    version = version + 1
 WHERE id = $1
   AND deleted_at IS NULL
 RETURNING *;
@@ -38,7 +45,9 @@ RETURNING *;
 -- name: DeleteUser :one
 UPDATE users
 SET deleted_at = NOW(),
-    updated_at = NOW()
+    deleted_by = $2,
+    updated_by = $2,
+    version = version + 1
 WHERE id = $1
   AND deleted_at IS NULL
 RETURNING *;
@@ -47,11 +56,17 @@ RETURNING *;
 INSERT INTO roles (
     code,
     name,
-    description
+    description,
+    created_by,
+    updated_by,
+    version
 ) VALUES (
     $1,
     $2,
-    $3
+    $3,
+    $4,
+    $5,
+    1
 )
 RETURNING *;
 
@@ -72,7 +87,8 @@ UPDATE roles
 SET code = $2,
     name = $3,
     description = $4,
-    updated_at = NOW()
+    updated_by = $5,
+    version = version + 1
 WHERE id = $1
   AND deleted_at IS NULL
 RETURNING *;
@@ -80,7 +96,9 @@ RETURNING *;
 -- name: DeleteRole :one
 UPDATE roles
 SET deleted_at = NOW(),
-    updated_at = NOW()
+    deleted_by = $2,
+    updated_by = $2,
+    version = version + 1
 WHERE id = $1
   AND deleted_at IS NULL
 RETURNING *;
@@ -89,11 +107,17 @@ RETURNING *;
 INSERT INTO permissions (
     resource,
     action,
-    name
+    name,
+    created_by,
+    updated_by,
+    version
 ) VALUES (
     $1,
     $2,
-    $3
+    $3,
+    $4,
+    $5,
+    1
 )
 RETURNING *;
 
@@ -114,7 +138,8 @@ UPDATE permissions
 SET resource = $2,
     action = $3,
     name = $4,
-    updated_at = NOW()
+    updated_by = $5,
+    version = version + 1
 WHERE id = $1
   AND deleted_at IS NULL
 RETURNING *;
@@ -122,7 +147,9 @@ RETURNING *;
 -- name: DeletePermission :one
 UPDATE permissions
 SET deleted_at = NOW(),
-    updated_at = NOW()
+    deleted_by = $2,
+    updated_by = $2,
+    version = version + 1
 WHERE id = $1
   AND deleted_at IS NULL
 RETURNING *;
@@ -130,10 +157,16 @@ RETURNING *;
 -- name: CreateUserRole :one
 INSERT INTO user_roles (
     user_id,
-    role_id
+    role_id,
+    created_by,
+    updated_by,
+    version
 ) VALUES (
     $1,
-    $2
+    $2,
+    $3,
+    $4,
+    1
 )
 RETURNING *;
 
@@ -141,19 +174,44 @@ RETURNING *;
 SELECT *
 FROM user_roles
 WHERE id = $1
-  AND deleted_at IS NULL;
+  AND deleted_at IS NULL
+  AND EXISTS (
+      SELECT 1
+      FROM users
+      WHERE users.id = user_roles.user_id
+        AND users.deleted_at IS NULL
+  )
+  AND EXISTS (
+      SELECT 1
+      FROM roles
+      WHERE roles.id = user_roles.role_id
+        AND roles.deleted_at IS NULL
+  );
 
 -- name: ListUserRoles :many
 SELECT *
 FROM user_roles
 WHERE deleted_at IS NULL
+  AND EXISTS (
+      SELECT 1
+      FROM users
+      WHERE users.id = user_roles.user_id
+        AND users.deleted_at IS NULL
+  )
+  AND EXISTS (
+      SELECT 1
+      FROM roles
+      WHERE roles.id = user_roles.role_id
+        AND roles.deleted_at IS NULL
+  )
 ORDER BY created_at DESC;
 
 -- name: UpdateUserRole :one
 UPDATE user_roles
 SET user_id = $2,
     role_id = $3,
-    updated_at = NOW()
+    updated_by = $4,
+    version = version + 1
 WHERE id = $1
   AND deleted_at IS NULL
 RETURNING *;
@@ -161,7 +219,9 @@ RETURNING *;
 -- name: DeleteUserRole :one
 UPDATE user_roles
 SET deleted_at = NOW(),
-    updated_at = NOW()
+    deleted_by = $2,
+    updated_by = $2,
+    version = version + 1
 WHERE id = $1
   AND deleted_at IS NULL
 RETURNING *;
@@ -169,10 +229,16 @@ RETURNING *;
 -- name: CreateRolePermission :one
 INSERT INTO role_permissions (
     role_id,
-    permission_id
+    permission_id,
+    created_by,
+    updated_by,
+    version
 ) VALUES (
     $1,
-    $2
+    $2,
+    $3,
+    $4,
+    1
 )
 RETURNING *;
 
@@ -180,19 +246,44 @@ RETURNING *;
 SELECT *
 FROM role_permissions
 WHERE id = $1
-  AND deleted_at IS NULL;
+  AND deleted_at IS NULL
+  AND EXISTS (
+      SELECT 1
+      FROM roles
+      WHERE roles.id = role_permissions.role_id
+        AND roles.deleted_at IS NULL
+  )
+  AND EXISTS (
+      SELECT 1
+      FROM permissions
+      WHERE permissions.id = role_permissions.permission_id
+        AND permissions.deleted_at IS NULL
+  );
 
 -- name: ListRolePermissions :many
 SELECT *
 FROM role_permissions
 WHERE deleted_at IS NULL
+  AND EXISTS (
+      SELECT 1
+      FROM roles
+      WHERE roles.id = role_permissions.role_id
+        AND roles.deleted_at IS NULL
+  )
+  AND EXISTS (
+      SELECT 1
+      FROM permissions
+      WHERE permissions.id = role_permissions.permission_id
+        AND permissions.deleted_at IS NULL
+  )
 ORDER BY created_at DESC;
 
 -- name: UpdateRolePermission :one
 UPDATE role_permissions
 SET role_id = $2,
     permission_id = $3,
-    updated_at = NOW()
+    updated_by = $4,
+    version = version + 1
 WHERE id = $1
   AND deleted_at IS NULL
 RETURNING *;
@@ -200,7 +291,9 @@ RETURNING *;
 -- name: DeleteRolePermission :one
 UPDATE role_permissions
 SET deleted_at = NOW(),
-    updated_at = NOW()
+    deleted_by = $2,
+    updated_by = $2,
+    version = version + 1
 WHERE id = $1
   AND deleted_at IS NULL
 RETURNING *;
