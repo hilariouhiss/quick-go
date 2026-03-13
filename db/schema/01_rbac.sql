@@ -2,7 +2,7 @@ CREATE TABLE users (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     username VARCHAR(64) NOT NULL,
     email VARCHAR(255) NOT NULL,
-    password_hash TEXT NOT NULL,
+    password_hash CHAR(60) NOT NULL,
     status SMALLINT NOT NULL DEFAULT 1,
     created_by BIGINT NOT NULL,
     updated_by BIGINT NOT NULL,
@@ -42,7 +42,8 @@ BEGIN
 
     INSERT INTO users (id, username, email, password_hash, status, created_by, updated_by)
     OVERRIDING SYSTEM VALUE
-    VALUES (1, 'system', 'system@local', '$2b$12$system.seed.account.disabled.placeholder.hash', 0, 1, 1)
+    VALUES (1, 'system', 'system@local', '$2a$10$.hvirm.kuybwWCyFmryCY.6Vkn968pSO93gzwz.OsrYAvexU2wZ2i', 0, 1, 1)
+    -- system.account.disabled.password.placeholder
     ON CONFLICT (id) DO UPDATE
     SET username = EXCLUDED.username,
         email = EXCLUDED.email,
