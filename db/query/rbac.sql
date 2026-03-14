@@ -161,12 +161,35 @@ INSERT INTO user_roles (
     created_by,
     updated_by,
     version
-) VALUES (
+) SELECT
     $1,
     $2,
     $3,
     $4,
     1
+WHERE EXISTS (
+    SELECT 1
+    FROM users
+    WHERE users.id = $1
+      AND users.deleted_at IS NULL
+)
+  AND EXISTS (
+    SELECT 1
+    FROM roles
+    WHERE roles.id = $2
+      AND roles.deleted_at IS NULL
+)
+  AND EXISTS (
+    SELECT 1
+    FROM users
+    WHERE users.id = $3
+      AND users.deleted_at IS NULL
+)
+  AND EXISTS (
+    SELECT 1
+    FROM users
+    WHERE users.id = $4
+      AND users.deleted_at IS NULL
 )
 RETURNING *;
 
@@ -214,6 +237,24 @@ SET user_id = $2,
     version = version + 1
 WHERE id = $1
   AND deleted_at IS NULL
+  AND EXISTS (
+      SELECT 1
+      FROM users
+      WHERE users.id = $2
+        AND users.deleted_at IS NULL
+  )
+  AND EXISTS (
+      SELECT 1
+      FROM roles
+      WHERE roles.id = $3
+        AND roles.deleted_at IS NULL
+  )
+  AND EXISTS (
+      SELECT 1
+      FROM users
+      WHERE users.id = $4
+        AND users.deleted_at IS NULL
+  )
 RETURNING *;
 
 -- name: DeleteUserRole :one
@@ -233,12 +274,35 @@ INSERT INTO role_permissions (
     created_by,
     updated_by,
     version
-) VALUES (
+) SELECT
     $1,
     $2,
     $3,
     $4,
     1
+WHERE EXISTS (
+    SELECT 1
+    FROM roles
+    WHERE roles.id = $1
+      AND roles.deleted_at IS NULL
+)
+  AND EXISTS (
+    SELECT 1
+    FROM permissions
+    WHERE permissions.id = $2
+      AND permissions.deleted_at IS NULL
+)
+  AND EXISTS (
+    SELECT 1
+    FROM users
+    WHERE users.id = $3
+      AND users.deleted_at IS NULL
+)
+  AND EXISTS (
+    SELECT 1
+    FROM users
+    WHERE users.id = $4
+      AND users.deleted_at IS NULL
 )
 RETURNING *;
 
@@ -286,6 +350,24 @@ SET role_id = $2,
     version = version + 1
 WHERE id = $1
   AND deleted_at IS NULL
+  AND EXISTS (
+      SELECT 1
+      FROM roles
+      WHERE roles.id = $2
+        AND roles.deleted_at IS NULL
+  )
+  AND EXISTS (
+      SELECT 1
+      FROM permissions
+      WHERE permissions.id = $3
+        AND permissions.deleted_at IS NULL
+  )
+  AND EXISTS (
+      SELECT 1
+      FROM users
+      WHERE users.id = $4
+        AND users.deleted_at IS NULL
+  )
 RETURNING *;
 
 -- name: DeleteRolePermission :one
