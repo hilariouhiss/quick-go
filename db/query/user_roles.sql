@@ -37,7 +37,7 @@ WHERE EXISTS (
 )
 RETURNING *;
 
--- name: GetUserRoleByID :one
+-- name: GetActiveUserRoleByID :one
 SELECT *
 FROM user_roles
 WHERE id = $1
@@ -55,7 +55,7 @@ WHERE id = $1
         AND roles.deleted_at IS NULL
   );
 
--- name: ListUserRoles :many
+-- name: ListActiveUserRoles :many
 SELECT *
 FROM user_roles
 WHERE deleted_at IS NULL
@@ -73,7 +73,7 @@ WHERE deleted_at IS NULL
   )
 ORDER BY created_at DESC;
 
--- name: UpdateUserRole :one
+-- name: UpdateActiveUserRoleByID :one
 UPDATE user_roles
 SET user_id = $2,
     role_id = $3,
@@ -101,7 +101,7 @@ WHERE id = $1
   )
 RETURNING *;
 
--- name: DeleteUserRole :one
+-- name: SoftDeleteUserRoleByID :one
 UPDATE user_roles
 SET deleted_at = NOW(),
     deleted_by = $2,
@@ -111,7 +111,7 @@ WHERE id = $1
   AND deleted_at IS NULL
 RETURNING *;
 
--- name: DeleteUserRolesByUserID :many
+-- name: SoftDeleteUserRolesByUserID :many
 UPDATE user_roles
 SET deleted_at = NOW(),
     deleted_by = $2,
@@ -121,7 +121,7 @@ WHERE user_id = $1
   AND deleted_at IS NULL
 RETURNING *;
 
--- name: RestoreUserRolesByUserID :many
+-- name: RestoreSoftDeletedUserRolesByUserID :many
 UPDATE user_roles
 SET deleted_at = NULL,
     deleted_by = NULL,
@@ -131,7 +131,7 @@ WHERE user_id = $1
   AND deleted_at IS NOT NULL
 RETURNING *;
 
--- name: DeleteUserRolesByRoleID :many
+-- name: SoftDeleteUserRolesByRoleID :many
 UPDATE user_roles
 SET deleted_at = NOW(),
     deleted_by = $2,
@@ -141,7 +141,7 @@ WHERE role_id = $1
   AND deleted_at IS NULL
 RETURNING *;
 
--- name: RestoreUserRolesByRoleID :many
+-- name: RestoreSoftDeletedUserRolesByRoleID :many
 UPDATE user_roles
 SET deleted_at = NULL,
     deleted_by = NULL,

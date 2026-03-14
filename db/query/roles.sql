@@ -16,19 +16,19 @@ INSERT INTO roles (
 )
 RETURNING *;
 
--- name: GetRoleByID :one
+-- name: GetActiveRoleByID :one
 SELECT *
 FROM roles
 WHERE id = $1
   AND deleted_at IS NULL;
 
--- name: ListRoles :many
+-- name: ListActiveRoles :many
 SELECT *
 FROM roles
 WHERE deleted_at IS NULL
 ORDER BY created_at DESC;
 
--- name: UpdateRole :one
+-- name: UpdateActiveRoleByID :one
 UPDATE roles
 SET code = $2,
     name = $3,
@@ -39,7 +39,7 @@ WHERE id = $1
   AND deleted_at IS NULL
 RETURNING *;
 
--- name: DeleteRole :one
+-- name: SoftDeleteRoleAndRolePermissions :one
 WITH deleted_role AS (
     UPDATE roles
     SET deleted_at = NOW(),
@@ -63,7 +63,7 @@ deleted_role_permissions AS (
 SELECT *
 FROM deleted_role;
 
--- name: DeleteRoleWithUserRoles :one
+-- name: SoftDeleteRoleAndRolePermissions :one
 WITH deleted_role AS (
     UPDATE roles
     SET deleted_at = NOW(),
@@ -97,7 +97,7 @@ deleted_user_roles AS (
 SELECT *
 FROM deleted_role;
 
--- name: RestoreRole :one
+-- name: RestoreRoleAndRolePermissions :one
 WITH restored_role AS (
     UPDATE roles
     SET deleted_at = NULL,
@@ -121,7 +121,7 @@ restored_role_permissions AS (
 SELECT *
 FROM restored_role;
 
--- name: RestoreRoleWithUserRoles :one
+-- name: RestoreRoleAndRolePermissions :one
 WITH restored_role AS (
     UPDATE roles
     SET deleted_at = NULL,
