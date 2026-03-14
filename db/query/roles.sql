@@ -63,7 +63,7 @@ deleted_role_permissions AS (
 SELECT *
 FROM deleted_role;
 
--- name: SoftDeleteRoleAndRolePermissions :one
+-- name: SoftDeleteRoleAndRolePermissionsAndUserRoles :one
 WITH deleted_role AS (
     UPDATE roles
     SET deleted_at = NOW(),
@@ -121,7 +121,7 @@ restored_role_permissions AS (
 SELECT *
 FROM restored_role;
 
--- name: RestoreRoleAndRolePermissions :one
+-- name: RestoreRoleAndRolePermissionsAndUserRoles :one
 WITH restored_role AS (
     UPDATE roles
     SET deleted_at = NULL,
