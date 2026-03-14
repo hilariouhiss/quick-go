@@ -120,3 +120,13 @@ SET deleted_at = NOW(),
 WHERE role_id = $1
   AND deleted_at IS NULL
 RETURNING *;
+
+-- name: RestoreRolePermissionsByRoleID :many
+UPDATE role_permissions
+SET deleted_at = NULL,
+    deleted_by = NULL,
+    updated_by = $2,
+    version = version + 1
+WHERE role_id = $1
+  AND deleted_at IS NOT NULL
+RETURNING *;

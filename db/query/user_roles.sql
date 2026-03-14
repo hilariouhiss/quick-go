@@ -130,3 +130,23 @@ SET deleted_at = NULL,
 WHERE user_id = $1
   AND deleted_at IS NOT NULL
 RETURNING *;
+
+-- name: DeleteUserRolesByRoleID :many
+UPDATE user_roles
+SET deleted_at = NOW(),
+    deleted_by = $2,
+    updated_by = $2,
+    version = version + 1
+WHERE role_id = $1
+  AND deleted_at IS NULL
+RETURNING *;
+
+-- name: RestoreUserRolesByRoleID :many
+UPDATE user_roles
+SET deleted_at = NULL,
+    deleted_by = NULL,
+    updated_by = $2,
+    version = version + 1
+WHERE role_id = $1
+  AND deleted_at IS NOT NULL
+RETURNING *;

@@ -49,16 +49,6 @@ WHERE id = $1
 RETURNING *;
 
 -- name: DeleteUser :one
-UPDATE users
-SET deleted_at = NOW(),
-    deleted_by = $2,
-    updated_by = $2,
-    version = version + 1
-WHERE id = $1
-  AND deleted_at IS NULL
-RETURNING *;
-
--- name: DeleteUserWithUserRoles :one
 WITH deleted_user AS (
     UPDATE users
     SET deleted_at = NOW(),
@@ -101,16 +91,6 @@ WHERE deleted_at IS NOT NULL
 ORDER BY deleted_at DESC;
 
 -- name: RestoreUser :one
-UPDATE users
-SET deleted_at = NULL,
-    deleted_by = NULL,
-    updated_by = $2,
-    version = version + 1
-WHERE id = $1
-  AND deleted_at IS NOT NULL
-RETURNING *;
-
--- name: RestoreUserWithUserRoles :one
 WITH restored_user AS (
     UPDATE users
     SET deleted_at = NULL,
