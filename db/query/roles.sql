@@ -48,3 +48,27 @@ SET deleted_at = NOW(),
 WHERE id = $1
   AND deleted_at IS NULL
 RETURNING *;
+
+-- name: DeleteRoleWithRolePermissions :one
+WITH deleted_role AS (
+    UPDATE roles
+    SET deleted_at = NOW(),
+        deleted_by = $2,
+        updated_by = $2,
+        version = version + 1
+    WHERE id = $1
+      AND deleted_at IS NULL
+    RETURNING *
+),
+deleted_role_permissions AS (
+    UPDATE role_permissions
+    SET deleted_at = NOW(),
+        deleted_by = $2,
+        updated_by = $2,
+        version = version + 1
+    WHERE role_id = $1
+      AND deleted_at IS NULL
+    RETURNING id
+)
+SELECT *
+FROM deleted_role;
