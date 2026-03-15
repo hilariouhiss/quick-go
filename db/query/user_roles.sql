@@ -37,79 +37,11 @@ WHERE EXISTS (
 )
 RETURNING *;
 
--- name: GetActiveUserRoleByID :one
-SELECT *
+-- name: GetActiveUserRolesByUserID :one
+SELECT * 
 FROM user_roles
-WHERE id = $1
-  AND deleted_at IS NULL
-  AND EXISTS (
-      SELECT 1
-      FROM users
-      WHERE users.id = user_roles.user_id
-        AND users.deleted_at IS NULL
-  )
-  AND EXISTS (
-      SELECT 1
-      FROM roles
-      WHERE roles.id = user_roles.role_id
-        AND roles.deleted_at IS NULL
-  );
-
--- name: ListActiveUserRoles :many
-SELECT *
-FROM user_roles
-WHERE deleted_at IS NULL
-  AND EXISTS (
-      SELECT 1
-      FROM users
-      WHERE users.id = user_roles.user_id
-        AND users.deleted_at IS NULL
-  )
-  AND EXISTS (
-      SELECT 1
-      FROM roles
-      WHERE roles.id = user_roles.role_id
-        AND roles.deleted_at IS NULL
-  )
-ORDER BY created_at DESC;
-
--- name: UpdateActiveUserRoleByID :one
-UPDATE user_roles
-SET user_id = $2,
-    role_id = $3,
-    updated_by = $4,
-    version = version + 1
-WHERE id = $1
-  AND deleted_at IS NULL
-  AND EXISTS (
-      SELECT 1
-      FROM users
-      WHERE users.id = $2
-        AND users.deleted_at IS NULL
-  )
-  AND EXISTS (
-      SELECT 1
-      FROM roles
-      WHERE roles.id = $3
-        AND roles.deleted_at IS NULL
-  )
-  AND EXISTS (
-      SELECT 1
-      FROM users
-      WHERE users.id = $4
-        AND users.deleted_at IS NULL
-  )
-RETURNING *;
-
--- name: SoftDeleteUserRoleByID :one
-UPDATE user_roles
-SET deleted_at = NOW(),
-    deleted_by = $2,
-    updated_by = $2,
-    version = version + 1
-WHERE id = $1
-  AND deleted_at IS NULL
-RETURNING *;
+WHERE user_id = $1
+  AND deleted_at IS NULL;
 
 -- name: SoftDeleteUserRolesByUserID :many
 UPDATE user_roles

@@ -22,6 +22,12 @@ FROM roles
 WHERE id = $1
   AND deleted_at IS NULL;
 
+-- name: GetActiveRoleByName :one
+SELECT *
+FROM roles
+WHERE name = $1
+  AND deleted_at IS NULL;
+
 -- name: ListActiveRoles :many
 SELECT *
 FROM roles

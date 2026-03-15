@@ -2,6 +2,9 @@ CREATE TABLE users (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     username VARCHAR(64) NOT NULL,
     email VARCHAR(255) NOT NULL,
+    used_by VARCHAR(64) NOT NULL DEFAULT '',
+    employee_no VARCHAR(64) NOT NULL DEFAULT '',
+    phone VARCHAR(32) NOT NULL DEFAULT '',
     password_hash CHAR(60) NOT NULL,
     status SMALLINT NOT NULL DEFAULT 1,
     created_by BIGINT NOT NULL,
@@ -73,6 +76,9 @@ COMMENT ON TABLE users IS '系统用户表';
 COMMENT ON COLUMN users.id IS '主键，自增ID';
 COMMENT ON COLUMN users.username IS '用户名，逻辑未删除范围内唯一';
 COMMENT ON COLUMN users.email IS '邮箱，逻辑未删除范围内唯一';
+COMMENT ON COLUMN users.used_by IS '使用人';
+COMMENT ON COLUMN users.employee_no IS '工号';
+COMMENT ON COLUMN users.phone IS '手机号';
 COMMENT ON COLUMN users.password_hash IS '密码哈希';
 COMMENT ON COLUMN users.status IS '账号状态：0 disabled，1 active，2 locked';
 COMMENT ON COLUMN users.created_by IS '创建人ID';

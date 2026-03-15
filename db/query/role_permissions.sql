@@ -37,10 +37,10 @@ WHERE EXISTS (
 )
 RETURNING *;
 
--- name: GetActiveRolePermissionByID :one
+-- name: GetActiveRolePermissionByRoleID :many
 SELECT *
 FROM role_permissions
-WHERE id = $1
+WHERE role_id = $1
   AND deleted_at IS NULL
   AND EXISTS (
       SELECT 1
@@ -54,24 +54,6 @@ WHERE id = $1
       WHERE permissions.id = role_permissions.permission_id
         AND permissions.deleted_at IS NULL
   );
-
--- name: ListActiveRolePermissions :many
-SELECT *
-FROM role_permissions
-WHERE deleted_at IS NULL
-  AND EXISTS (
-      SELECT 1
-      FROM roles
-      WHERE roles.id = role_permissions.role_id
-        AND roles.deleted_at IS NULL
-  )
-  AND EXISTS (
-      SELECT 1
-      FROM permissions
-      WHERE permissions.id = role_permissions.permission_id
-        AND permissions.deleted_at IS NULL
-  )
-ORDER BY created_at DESC;
 
 -- name: UpdateActiveRolePermissionByID :one
 UPDATE role_permissions

@@ -2,6 +2,9 @@
 INSERT INTO users (
     username,
     email,
+    used_by,
+    employee_no,
+    phone,
     password_hash,
     status,
     created_by,
@@ -14,6 +17,9 @@ INSERT INTO users (
     $4,
     $5,
     $6,
+    $7,
+    $8,
+    $9,
     1
 )
 RETURNING *;
@@ -30,6 +36,12 @@ FROM users
 WHERE username = $1
   AND deleted_at IS NULL;
 
+-- name: GetActiveUserByUsedBy :one
+SELECT *
+FROM users
+WHERE userd_by = $1
+  AND deleted_at IS NULL;
+
 -- name: ListActiveUsers :many
 SELECT *
 FROM users
@@ -40,9 +52,12 @@ ORDER BY created_at DESC;
 UPDATE users
 SET username = $2,
     email = $3,
-    password_hash = $4,
-    status = $5,
-    updated_by = $6,
+    used_by = $4,
+    employee_no = $5,
+    phone = $6,
+    password_hash = $7,
+    status = $8,
+    updated_by = $9,
     version = version + 1
 WHERE id = $1
   AND deleted_at IS NULL
