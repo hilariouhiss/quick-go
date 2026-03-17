@@ -37,13 +37,13 @@ WHERE EXISTS (
 )
 RETURNING *;
 
--- name: GetActiveUserRolesByUserID :one
+-- name: GetActiveUserRolesByUserId :many
 SELECT * 
 FROM user_roles
 WHERE user_id = $1
   AND deleted_at IS NULL;
 
--- name: SoftDeleteUserRolesByUserID :many
+-- name: SoftDeleteUserRolesByUserId :many
 UPDATE user_roles
 SET deleted_at = NOW(),
     deleted_by = $2,
@@ -53,7 +53,7 @@ WHERE user_id = $1
   AND deleted_at IS NULL
 RETURNING *;
 
--- name: RestoreSoftDeletedUserRolesByUserID :many
+-- name: RestoreSoftDeletedUserRolesByUserId :many
 UPDATE user_roles
 SET deleted_at = NULL,
     deleted_by = NULL,
@@ -63,7 +63,7 @@ WHERE user_id = $1
   AND deleted_at IS NOT NULL
 RETURNING *;
 
--- name: SoftDeleteUserRolesByRoleID :many
+-- name: SoftDeleteUserRolesByRoleId :many
 UPDATE user_roles
 SET deleted_at = NOW(),
     deleted_by = $2,
@@ -73,7 +73,7 @@ WHERE role_id = $1
   AND deleted_at IS NULL
 RETURNING *;
 
--- name: RestoreSoftDeletedUserRolesByRoleID :many
+-- name: RestoreSoftDeletedUserRolesByRoleId :many
 UPDATE user_roles
 SET deleted_at = NULL,
     deleted_by = NULL,

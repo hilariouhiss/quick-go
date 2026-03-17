@@ -37,7 +37,7 @@ WHERE EXISTS (
 )
 RETURNING *;
 
--- name: GetActiveRolePermissionByRoleID :many
+-- name: GetActiveRolePermissionByRoleId :many
 SELECT *
 FROM role_permissions
 WHERE role_id = $1
@@ -55,7 +55,7 @@ WHERE role_id = $1
         AND permissions.deleted_at IS NULL
   );
 
--- name: UpdateActiveRolePermissionByID :one
+-- name: UpdateActiveRolePermissionById :one
 UPDATE role_permissions
 SET role_id = $2,
     permission_id = $3,
@@ -83,7 +83,7 @@ WHERE id = $1
   )
 RETURNING *;
 
--- name: SoftDeleteRolePermissionByID :one
+-- name: SoftDeleteRolePermissionById :one
 UPDATE role_permissions
 SET deleted_at = NOW(),
     deleted_by = $2,
@@ -93,7 +93,7 @@ WHERE id = $1
   AND deleted_at IS NULL
 RETURNING *;
 
--- name: SoftDeleteRolePermissionsByRoleID :many
+-- name: SoftDeleteRolePermissionsByRoleId :many
 UPDATE role_permissions
 SET deleted_at = NOW(),
     deleted_by = $2,
@@ -103,7 +103,7 @@ WHERE role_id = $1
   AND deleted_at IS NULL
 RETURNING *;
 
--- name: RestoreSoftDeletedRolePermissionsByRoleID :many
+-- name: RestoreSoftDeletedRolePermissionsByRoleId :many
 UPDATE role_permissions
 SET deleted_at = NULL,
     deleted_by = NULL,

@@ -16,7 +16,7 @@ INSERT INTO permissions (
 )
 RETURNING *;
 
--- name: GetActivePermissionByID :one
+-- name: GetActivePermissionById :one
 SELECT *
 FROM permissions
 WHERE id = $1
@@ -28,7 +28,7 @@ FROM permissions
 WHERE deleted_at IS NULL
 ORDER BY created_at DESC;
 
--- name: UpdateActivePermissionByID :one
+-- name: UpdateActivePermissionById :one
 UPDATE permissions
 SET resource = $2,
     action = $3,
@@ -39,7 +39,7 @@ WHERE id = $1
   AND deleted_at IS NULL
 RETURNING *;
 
--- name: SoftDeletePermissionByID :one
+-- name: SoftDeletePermissionById :one
 UPDATE permissions
 SET deleted_at = NOW(),
     deleted_by = $2,

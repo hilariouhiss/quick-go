@@ -24,7 +24,7 @@ INSERT INTO users (
 )
 RETURNING *;
 
--- name: GetActiveUserByID :one
+-- name: GetActiveUserById :one
 SELECT *
 FROM users
 WHERE id = $1
@@ -39,7 +39,7 @@ WHERE username = $1
 -- name: GetActiveUserByUsedBy :one
 SELECT *
 FROM users
-WHERE userd_by = $1
+WHERE used_by = $1
   AND deleted_at IS NULL;
 
 -- name: ListActiveUsers :many
@@ -48,7 +48,7 @@ FROM users
 WHERE deleted_at IS NULL
 ORDER BY created_at DESC;
 
--- name: UpdateActiveUserByID :one
+-- name: UpdateActiveUserById :one
 UPDATE users
 SET username = $2,
     email = $3,
@@ -63,7 +63,7 @@ WHERE id = $1
   AND deleted_at IS NULL
 RETURNING *;
 
--- name: SoftDeleteUserAndUserRoles :one
+-- name: SoftDeleteUserAndUserRolesByUserId :one
 WITH deleted_user AS (
     UPDATE users
     SET deleted_at = NOW(),
@@ -87,7 +87,7 @@ deleted_user_roles AS (
 SELECT *
 FROM deleted_user;
 
--- name: GetSoftDeletedUserByID :one
+-- name: GetSoftDeletedUserById :one
 SELECT *
 FROM users
 WHERE id = $1
@@ -105,7 +105,7 @@ FROM users
 WHERE deleted_at IS NOT NULL
 ORDER BY deleted_at DESC;
 
--- name: RestoreUserAndUserRoles :one
+-- name: RestoreUserAndUserRolesByUserId :one
 WITH restored_user AS (
     UPDATE users
     SET deleted_at = NULL,

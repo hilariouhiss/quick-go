@@ -1,41 +1,41 @@
-# SQL 查询接口汇总
+# SQL 查询接口
 
-| 文件 | API | 功能简述 |
-| --- | --- | --- |
-| `permissions.sql` | `CreatePermission` | 创建权限 |
-| `permissions.sql` | `GetActivePermissionByID` | 按ID查询未删除权限 |
-| `permissions.sql` | `ListActivePermissions` | 查询全部未删除权限 |
-| `permissions.sql` | `UpdateActivePermissionByID` | 按ID更新未删除权限 |
-| `permissions.sql` | `SoftDeletePermissionByID` | 按ID软删除权限 |
-| `role_permissions.sql` | `CreateRolePermission` | 创建角色与权限关联 |
-| `role_permissions.sql` | `GetActiveRolePermissionByRoleID` | 按角色ID查询有效角色权限关联 |
-| `role_permissions.sql` | `UpdateActiveRolePermissionByID` | 按ID更新角色权限关联 |
-| `role_permissions.sql` | `SoftDeleteRolePermissionByID` | 按ID软删除角色权限关联 |
-| `role_permissions.sql` | `SoftDeleteRolePermissionsByRoleID` | 按角色ID批量软删除角色权限关联 |
-| `role_permissions.sql` | `RestoreSoftDeletedRolePermissionsByRoleID` | 按角色ID批量恢复角色权限关联 |
-| `roles.sql` | `CreateRole` | 创建角色 |
-| `roles.sql` | `GetActiveRoleByID` | 按ID查询未删除角色 |
-| `roles.sql` | `GetActiveRoleByName` | 按名称查询未删除角色 |
-| `roles.sql` | `ListActiveRoles` | 查询全部未删除角色 |
-| `roles.sql` | `UpdateActiveRoleByID` | 按ID更新未删除角色 |
-| `roles.sql` | `SoftDeleteRoleAndRolePermissions` | 软删除角色及其角色权限关联 |
-| `roles.sql` | `SoftDeleteRoleAndRolePermissionsAndUserRoles` | 软删除角色及其角色权限和用户角色关联 |
-| `roles.sql` | `RestoreRoleAndRolePermissions` | 恢复角色及其角色权限关联 |
-| `roles.sql` | `RestoreRoleAndRolePermissionsAndUserRoles` | 恢复角色及其角色权限和用户角色关联 |
-| `user_roles.sql` | `CreateUserRole` | 创建用户与角色关联 |
-| `user_roles.sql` | `GetActiveUserRolesByUserID` | 按用户ID查询未删除用户角色关联 |
-| `user_roles.sql` | `SoftDeleteUserRolesByUserID` | 按用户ID批量软删除用户角色关联 |
-| `user_roles.sql` | `RestoreSoftDeletedUserRolesByUserID` | 按用户ID批量恢复用户角色关联 |
-| `user_roles.sql` | `SoftDeleteUserRolesByRoleID` | 按角色ID批量软删除用户角色关联 |
-| `user_roles.sql` | `RestoreSoftDeletedUserRolesByRoleID` | 按角色ID批量恢复用户角色关联 |
-| `users.sql` | `CreateUser` | 创建用户 |
-| `users.sql` | `GetActiveUserByID` | 按ID查询未删除用户 |
-| `users.sql` | `GetActiveUserByUsername` | 按用户名查询未删除用户 |
-| `users.sql` | `GetActiveUserByUsedBy` | 按使用人查询未删除用户 |
-| `users.sql` | `ListActiveUsers` | 查询全部未删除用户 |
-| `users.sql` | `UpdateActiveUserByID` | 按ID更新未删除用户 |
-| `users.sql` | `SoftDeleteUserAndUserRoles` | 软删除用户及其用户角色关联 |
-| `users.sql` | `GetSoftDeletedUserByID` | 按ID查询已软删除用户 |
-| `users.sql` | `GetSoftDeletedUserByUsername` | 按用户名查询已软删除用户 |
-| `users.sql` | `ListSoftDeletedUsers` | 查询全部已软删除用户 |
-| `users.sql` | `RestoreUserAndUserRoles` | 恢复用户及其用户角色关联 |
+| 状态 |          文件          |                         API - Return                         |               功能简述               |
+| :--: | :--------------------: | :----------------------------------------------------------: | :----------------------------------: |
+|  ✅   |   `permissions.sql`    |                  `CreatePermission` - `one`                  |               创建权限               |
+|  ✅   |   `permissions.sql`    |              `GetActivePermissionById` - `one`               |          按Id查询未删除权限          |
+|  ✅   |   `permissions.sql`    |               `ListActivePermissions` - `many`               |          查询全部未删除权限          |
+|  ✅   |   `permissions.sql`    |             `UpdateActivePermissionById` - `one`             |          按Id更新未删除权限          |
+|  ✅   |   `permissions.sql`    |              `SoftDeletePermissionById` - `one`              |            按Id软删除权限            |
+|  ✅   | `role_permissions.sql` |                `CreateRolePermission` - `one`                |          创建角色与权限关联          |
+|  ✅   | `role_permissions.sql` |          `GetActiveRolePermissionByRoleId` - `many`          |     按角色Id查询有效角色权限关联     |
+|  ✅   | `role_permissions.sql` |           `UpdateActiveRolePermissionById` - `one`           |         按Id更新角色权限关联         |
+|  ✅   | `role_permissions.sql` |            `SoftDeleteRolePermissionById` - `one`            |        按Id软删除角色权限关联        |
+|  ✅   | `role_permissions.sql` |         `SoftDeleteRolePermissionsByRoleId` - `one`          |    按角色Id批量软删除角色权限关联    |
+|  ✅   | `role_permissions.sql` |     `RestoreSoftDeletedRolePermissionsByRoleId` - `one`      |     按角色Id批量恢复角色权限关联     |
+|  ✅   |      `roles.sql`       |                      `CreateRole - one`                      |               创建角色               |
+|  ✅   |      `roles.sql`       |                 `GetActiveRoleById` - `one`                  |          按Id查询未删除角色          |
+|  ✅   |      `roles.sql`       |                 `GetActiveRoleByName - one`                  |         按名称查询未删除角色         |
+|  ✅   |      `roles.sql`       |                  `ListActiveRoles` - `many`                  |          查询全部未删除角色          |
+|  ✅   |      `roles.sql`       |                `UpdateActiveRoleById` - `one`                |          按Id更新未删除角色          |
+|  ✅   |      `roles.sql`       |      `SoftDeleteRoleAndRolePermissionsByRoleId` - `one`      |      软删除角色及其角色权限关联      |
+|  ✅   |      `roles.sql`       | `SoftDeleteRoleAndRolePermissionsAndUserRolesByRoleId` - `one` | 软删除角色及其角色权限和用户角色关联 |
+|  ✅   |      `roles.sql`       |       `RestoreRoleAndRolePermissionsByRoleId` - `one`        |       恢复角色及其角色权限关联       |
+|  ✅   |      `roles.sql`       | `RestoreRoleAndRolePermissionsAndUserRolesByRoleId` - `one`  |  恢复角色及其角色权限和用户角色关联  |
+|  ✅   |    `user_roles.sql`    |                   `CreateUserRole` - `one`                   |          创建用户与角色关联          |
+|  ✅   |    `user_roles.sql`    |            `GetActiveUserRolesByUserId` - `many`             |    按用户Id查询未删除用户角色关联    |
+|  ✅   |    `user_roles.sql`    |            `SoftDeleteUserRolesByUserId` - `many`            |    按用户Id批量软删除用户角色关联    |
+|  ✅   |    `user_roles.sql`    |        `RestoreSoftDeletedUserRolesByUserId` - `many`        |     按用户Id批量恢复用户角色关联     |
+|  ✅   |    `user_roles.sql`    |            `SoftDeleteUserRolesByRoleId` - `many`            |    按角色Id批量软删除用户角色关联    |
+|  ✅   |    `user_roles.sql`    |        `RestoreSoftDeletedUserRolesByRoleId` - `many`        |     按角色Id批量恢复用户角色关联     |
+|  ✅   |      `users.sql`       |                     `CreateUser` - `one`                     |               创建用户               |
+|  ✅   |      `users.sql`       |                 `GetActiveUserById` - `one`                  |          按Id查询未删除用户          |
+|  ✅   |      `users.sql`       |              `GetActiveUserByUsername` - `one`               |        按用户名查询未删除用户        |
+|  ✅   |      `users.sql`       |               `GetActiveUserByUsedBy` - `one`                |        按使用人查询未删除用户        |
+|  ✅   |      `users.sql`       |                  `ListActiveUsers` - `many`                  |          查询全部未删除用户          |
+|  ✅   |      `users.sql`       |              `UpdateActiveUserByUserId` - `one`              |          按Id更新未删除用户          |
+|  ✅   |      `users.sql`       |             `SoftDeleteUserAndUserRoles` - `one`             |      软删除用户及其用户角色关联      |
+|  ✅   |      `users.sql`       |               `GetSoftDeletedUserById` - `one`               |         按Id查询已软删除用户         |
+|  ✅   |      `users.sql`       |            `GetSoftDeletedUserByUsername` - `one`            |       按用户名查询已软删除用户       |
+|  ✅   |      `users.sql`       |                `ListSoftDeletedUsers` - `one`                |         查询全部已软删除用户         |
+|  ✅   |      `users.sql`       |          `RestoreUserAndUserRolesByUserId` - `one`           |       恢复用户及其用户角色关联       |
