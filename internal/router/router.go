@@ -13,7 +13,7 @@ import (
 )
 
 // New 创建并装配路由
-func New(healthService *service.HealthService) *gin.Engine {
+func New(healthService *service.HealthService, authService *service.AuthService) *gin.Engine {
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
 		_ = v.RegisterValidation("notblank", func(fl validator.FieldLevel) bool {
 			value, ok := fl.Field().Interface().(string)
@@ -28,5 +28,10 @@ func New(healthService *service.HealthService) *gin.Engine {
 	engine.Use(gin.Logger())
 	engine.Use(middleware.Recovery())
 	engine.GET("/health", handler.NewHealthHandler(healthService))
+	engine.POST("/auth/login", handler.NewLoginHandler(authService))
+	engine.POST("/auth/refresh", handler.NewRefreshHandler(authService))
+	protected := engine.Group("/")
+	protected.Use(middleware.AuthRequired(authService))
+	protected.GET("/auth/me", handler.CurrentUser)
 	return engine
 }

@@ -30,8 +30,14 @@ func New(ctx context.Context, cfg config.Config) (*App, error) {
 	if err != nil {
 		return nil, err
 	}
+	jwtService, err := service.NewJWTService(cfg.JWT)
+	if err != nil {
+		db.Close()
+		return nil, err
+	}
 	healthService := service.NewHealthService(db)
-	engine := router.New(healthService)
+	authService := service.NewAuthService(db, jwtService)
+	engine := router.New(healthService, authService)
 	return &App{
 		Config: cfg,
 		Router: &routerAdapter{engineHandler: engine},

@@ -7,3 +7,8 @@ postgres:
   schema: "public"
   max_conns: 50
   min_conns: 5
+jwt:
+  secret: "quick-product-secret"
+  issuer: "quick-product"
+  access_ttl_minutes: 15
+  refresh_ttl_hours: 168

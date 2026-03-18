@@ -13,6 +13,7 @@ type Config struct {
 	Env      string         `mapstructure:"env"`
 	Addr     string         `mapstructure:"addr"`
 	Postgres PostgresConfig `mapstructure:"postgres"`
+	JWT      JWTConfig      `mapstructure:"jwt"`
 }
 
 // PostgresConfig 定义 PostgreSQL 连接与连接池参数
@@ -23,6 +24,13 @@ type PostgresConfig struct {
 	Schema   string `mapstructure:"schema"`
 	MaxConns int32  `mapstructure:"max_conns"`
 	MinConns int32  `mapstructure:"min_conns"`
+}
+
+type JWTConfig struct {
+	Secret           string `mapstructure:"secret"`
+	Issuer           string `mapstructure:"issuer"`
+	AccessTTLMinutes int64  `mapstructure:"access_ttl_minutes"`
+	RefreshTTLHours  int64  `mapstructure:"refresh_ttl_hours"`
 }
 
 // Load 按环境加载配置，支持 dev/product 与环境变量覆盖
@@ -50,6 +58,10 @@ func Load() (Config, error) {
 	v.SetDefault("postgres.schema", "public")
 	v.SetDefault("postgres.max_conns", 20)
 	v.SetDefault("postgres.min_conns", 2)
+	v.SetDefault("jwt.secret", "quick-dev-secret")
+	v.SetDefault("jwt.issuer", "quick")
+	v.SetDefault("jwt.access_ttl_minutes", int64(30))
+	v.SetDefault("jwt.refresh_ttl_hours", int64(168))
 
 	if err := v.ReadInConfig(); err != nil {
 		var notFound viper.ConfigFileNotFoundError
