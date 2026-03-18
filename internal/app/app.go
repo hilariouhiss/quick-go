@@ -37,7 +37,8 @@ func New(ctx context.Context, cfg config.Config) (*App, error) {
 	}
 	healthService := service.NewHealthService(db)
 	authService := service.NewAuthService(db, jwtService)
-	engine := router.New(healthService, authService)
+	userService := service.NewUserService(db)
+	engine := router.New(healthService, authService, userService)
 	return &App{
 		Config: cfg,
 		Router: &routerAdapter{engineHandler: engine},
